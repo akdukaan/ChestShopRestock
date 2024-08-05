@@ -13,6 +13,7 @@ public final class ChestShopRestock extends JavaPlugin {
         database = new Database(this);
         getServer().getPluginManager().registerEvents(new ListenerShopCreated(), this);
         getServer().getPluginManager().registerEvents(new ListenerShopDeleted(), this);
+        getServer().getPluginManager().registerEvents(new ListenerTransaction(), this);
         getCommand("restock").setExecutor(new CommandRestock());
     }
 
