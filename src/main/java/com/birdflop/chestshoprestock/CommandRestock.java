@@ -12,12 +12,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CommandRestock implements CommandExecutor {
 
@@ -30,61 +31,28 @@ public class CommandRestock implements CommandExecutor {
             return true;
         }
         ItemStack[] contents = player.getInventory().getStorageContents();
-        for (ItemStack content : contents) {
-            dumpContents(player, content);
+        for (int i = 0; i < contents.length; i++) {
+            moveStack(player, i);
         }
         player.sendMessage("Restocked!");
         return true;
     }
 
-    public void dumpContents(Player player, ItemStack content) {
+    public void moveStack(Player player, int inventoryIndex) {
+        PlayerInventory playerInventory = player.getInventory();
+        ItemStack[] storage = playerInventory.getStorageContents();
+        ItemStack content = storage[inventoryIndex];
         if (content == null) return;
         String itemName = ItemUtil.getSignName(content);
         String playerUuid = player.getUniqueId().toString();
         ArrayList<Location> locations = ChestShopRestock.database.getLocations(playerUuid, itemName);
+
         for (Location location : locations) {
             Container container = getContainer(location, player);
             if (container != null) {
-                moveItems(player, container, content);
-            }
-        }
-    }
-
-    public void moveItems(Player player, Container container, ItemStack itemToMove) {
-        Inventory inv = container.getInventory();
-        for (ItemStack existingContainerItem : inv.getStorageContents()) {
-            if (itemToMove.getAmount() <= 0) return;
-            if (existingContainerItem != null && existingContainerItem.isSimilar(itemToMove)) {
-                int maxStackSize = itemToMove.getMaxStackSize();
-                int space = maxStackSize - existingContainerItem.getAmount();
-                if (space > 0) {
-                    int itemStackAmount = itemToMove.getAmount();
-                    // Calculate how much to add to this itemstack
-                    int amountToMove = Math.min(space, itemStackAmount);
-                    existingContainerItem.setAmount(existingContainerItem.getAmount() + amountToMove);
-                    // Update itemstack to reflect how much more we need to move
-                    itemToMove.setAmount(itemStackAmount - amountToMove);
-                    removeFromPlayer(player, itemToMove, amountToMove);
-                }
-            }
-        }
-        int emptySlot = container.getInventory().firstEmpty();
-        if (emptySlot >= 0) {
-            container.getInventory().setItem(emptySlot, itemToMove);
-            removeFromPlayer(player, itemToMove, itemToMove.getAmount());
-        }
-    }
-
-    public void removeFromPlayer(Player player, ItemStack stack, int removeAmount) {
-        for (ItemStack existingItem : player.getInventory().getStorageContents()) {
-            if (removeAmount <= 0) return;
-            if (existingItem != null && existingItem.isSimilar(stack)) {
-                int existingAmount = existingItem.getAmount();
-                // Calculate how much to remove from this itemstack
-                int amountToRemove = Math.min(existingAmount, removeAmount);
-                existingItem.setAmount(existingAmount - amountToRemove);
-                // Calculate how much more we need to remove
-                removeAmount -= amountToRemove;
+                HashMap<Integer, ItemStack> couldntStore = container.getInventory().addItem(content);
+                storage[inventoryIndex] = couldntStore.get(0);
+                playerInventory.setStorageContents(storage);
             }
         }
     }
@@ -95,6 +63,7 @@ public class CommandRestock implements CommandExecutor {
      * @param player verify that the shop is owned by the player
      * @return
      */
+    @Nullable
     public Container getContainer(Location location, @Nullable Player player) {
         if (!location.isChunkLoaded()) return null;
         Block block = location.getWorld().getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ());
