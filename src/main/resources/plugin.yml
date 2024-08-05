@@ -1,0 +1,9 @@
+name: ChestShopRestock
+version: '${project.version}'
+main: com.birdflop.chestshoprestock.ChestShopRestock
+api-version: '1.21'
+commands:
+  restock:
+    description: restock your chestshops
+    permission: chestshoprestock.command.restock
+    usage: /<command>
