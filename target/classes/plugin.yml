@@ -1,9 +1,0 @@
-name: ChestShopRestock
-version: '0.1-SNAPSHOT'
-main: com.birdflop.chestshoprestock.ChestShopRestock
-api-version: '1.21'
-commands:
-  restock:
-    description: restock your chestshops
-    permission: chestshoprestock.command.restock
-    usage: /<command>
