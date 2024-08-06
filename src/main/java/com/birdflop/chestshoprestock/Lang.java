@@ -1,9 +1,6 @@
 package com.birdflop.chestshoprestock;
 
 import com.google.common.base.Throwables;
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -18,9 +15,9 @@ public class Lang {
     private static YamlConfiguration config;
 
     public static String COMMAND_NO_PERMISSION = "<red>You do not have permission for that command.";
-    public static String RESTOCK_SUCCESS = "<orange>Your shops have been restocked!";
+    public static String RESTOCK_SUCCESS = "<gold>Your shops have been restocked!";
     public static String COMMAND_PLAYERS_ONLY = "<red>That command can only be used by players.";
-    public static String RELOAD_SUCCESS = "<orange>Plugin reloaded!";
+    public static String RELOAD_SUCCESS = "<gold>Plugin reloaded!";
 
     private static void init() {
         COMMAND_NO_PERMISSION = getString("command-no-permission", COMMAND_NO_PERMISSION);
@@ -68,8 +65,6 @@ public class Lang {
      * @param message   Message to send
      */
     public static void sendMessage(@NotNull CommandSender recipient, String message) {
-        MiniMessage mm = MiniMessage.miniMessage();
-        Component component = mm.deserialize(message);
-        Audience.audience(recipient).sendMessage(component);
+        recipient.sendRichMessage(message);
     }
 }
