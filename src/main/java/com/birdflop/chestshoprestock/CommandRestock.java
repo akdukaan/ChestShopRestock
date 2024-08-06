@@ -24,17 +24,20 @@ public class CommandRestock implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (!(commandSender instanceof Player)) return true;
+        if (!(commandSender instanceof Player)) {
+            Lang.sendMessage(commandSender, Lang.COMMAND_PLAYERS_ONLY);
+            return true;
+        }
         Player player = (Player) commandSender;
-        if (!commandSender.hasPermission("chestshoprestock.command.restock")) {
-            player.sendMessage("No permission!");
+        if (!player.hasPermission("chestshoprestock.command.restock")) {
+            Lang.sendMessage(player, Lang.COMMAND_NO_PERMISSION);
             return true;
         }
         ItemStack[] contents = player.getInventory().getStorageContents();
         for (int i = 0; i < contents.length; i++) {
             moveStack(player, i);
         }
-        player.sendMessage("Restocked!");
+        Lang.sendMessage(player, Lang.RESTOCK_SUCCESS);
         return true;
     }
 

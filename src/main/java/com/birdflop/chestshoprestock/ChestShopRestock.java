@@ -11,10 +11,15 @@ public final class ChestShopRestock extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         database = new Database(this);
+
+        Lang.reload();
+
         getServer().getPluginManager().registerEvents(new ListenerShopCreated(), this);
         getServer().getPluginManager().registerEvents(new ListenerShopDeleted(), this);
         getServer().getPluginManager().registerEvents(new ListenerTransaction(), this);
+
         getCommand("restock").setExecutor(new CommandRestock());
+        getCommand("csrestock").setExecutor(new CommandCsrestock());
     }
 
     @Override
