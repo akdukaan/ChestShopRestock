@@ -1,6 +1,8 @@
 package com.birdflop.chestshoprestock;
 
 import com.google.common.base.Throwables;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -65,6 +67,7 @@ public class Lang {
      * @param message   Message to send
      */
     public static void sendMessage(@NotNull CommandSender recipient, String message) {
-        recipient.sendRichMessage(message);
+        Component component = MiniMessage.miniMessage().deserialize(message);
+        recipient.sendMessage(component);
     }
 }

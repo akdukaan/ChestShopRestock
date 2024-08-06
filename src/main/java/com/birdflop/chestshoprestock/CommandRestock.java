@@ -68,7 +68,13 @@ public class CommandRestock implements CommandExecutor {
      */
     @Nullable
     public Container getContainer(Location location, @Nullable Player player) {
-        if (!location.isChunkLoaded()) return null;
+        if (!location.isChunkLoaded()) {
+            if (player == null) return null;
+            if (player.hasPermission("chestshoprestock.command.restock.loadchunks")) {
+                location.getChunk().load(false);
+            }
+            if (!location.isChunkLoaded()) return null;
+        }
         Block block = location.getWorld().getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         if (player != null) {
             BlockState state = block.getState();
