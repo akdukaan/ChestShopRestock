@@ -48,17 +48,22 @@ public class CommandRestock implements CommandExecutor {
     }
 
     public void moveStack(Player player, int inventoryIndex) {
+        // Check that an ItemStack exists at the location
         PlayerInventory playerInventory = player.getInventory();
         ItemStack[] storage = playerInventory.getStorageContents();
         ItemStack content = storage[inventoryIndex];
         if (content == null) return;
+
+        // Find the list of shops for this itemstack
         String itemName = ItemUtil.getSignName(content);
         String playerUuid = player.getUniqueId().toString();
         ArrayList<Location> locations = ChestShopRestock.database.getLocations(playerUuid, itemName);
 
+        //
         for (Location location : locations) {
             Container container = getContainer(location, player);
             if (container != null) {
+                HookCoreProtect.logTransaction(player, location);
                 HashMap<Integer, ItemStack> couldntStore = container.getInventory().addItem(content);
                 storage[inventoryIndex] = couldntStore.get(0);
                 playerInventory.setStorageContents(storage);

@@ -4,6 +4,8 @@ main: com.birdflop.chestshoprestock.ChestShopRestock
 api-version: '1.18'
 depend:
   - "ChestShop"
+softdepend:
+  - "CoreProtect"
 commands:
   restock:
     description: Restock your chestshops
