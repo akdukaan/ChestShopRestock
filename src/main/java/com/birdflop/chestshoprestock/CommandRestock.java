@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class CommandRestock implements CommandExecutor {
@@ -36,6 +37,11 @@ public class CommandRestock implements CommandExecutor {
         ItemStack[] contents = player.getInventory().getStorageContents();
         for (int i = 0; i < contents.length; i++) {
             moveStack(player, i);
+        }
+        ItemStack[] contentAfter = player.getInventory().getStorageContents();
+        if (Arrays.equals(contents, contentAfter)) {
+            Lang.sendMessage(player, Lang.NOTHING_TO_RESTOCK);
+            return true;
         }
         Lang.sendMessage(player, Lang.RESTOCK_SUCCESS);
         return true;
@@ -63,11 +69,11 @@ public class CommandRestock implements CommandExecutor {
     /**
      *
      * @param location get the container that has a shop sign at this location
-     * @param player verify that the shop is owned by the player
+     * @param player verify that the shop is owned by them and check their permission to see if we should load chunks
      * @return
      */
     @Nullable
-    public Container getContainer(Location location, @Nullable Player player) {
+    public Container getContainer(Location location, Player player) {
         if (!location.isChunkLoaded()) {
             if (player == null) return null;
             if (player.hasPermission("chestshoprestock.command.restock.loadchunks")) {

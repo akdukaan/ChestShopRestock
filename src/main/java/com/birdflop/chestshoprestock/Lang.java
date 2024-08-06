@@ -18,6 +18,7 @@ public class Lang {
 
     public static String COMMAND_NO_PERMISSION = "<red>You do not have permission for that command.";
     public static String RESTOCK_SUCCESS = "<gold>Your shops have been restocked!";
+    public static String NOTHING_TO_RESTOCK = "<red>Found nothing to restock. Check that an item in your inventory matches a ChestShop that has room and is in a loaded chunk. If it still can't find the shop, you may need to recreate the shop sign.";
     public static String COMMAND_PLAYERS_ONLY = "<red>That command can only be used by players.";
     public static String RELOAD_SUCCESS = "<gold>Plugin reloaded!";
 
