@@ -12,6 +12,16 @@
       <option name="url" value="https://oss.sonatype.org/content/groups/public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="playpro-repo" />
+      <option name="name" value="PlayPro Repository" />
+      <option name="url" value="https://maven.playpro.com" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="spigot-repo" />
+      <option name="name" value="spigot-repo" />
+      <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="chestshop-repo" />
       <option name="name" value="chestshop-repo" />
       <option name="url" value="https://repo.minebench.de/" />
@@ -30,6 +40,11 @@
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="playpro-repo" />
+      <option name="name" value="playpro-repo" />
+      <option name="url" value="https://maven.playpro.com" />
     </remote-repository>
   </component>
 </project>

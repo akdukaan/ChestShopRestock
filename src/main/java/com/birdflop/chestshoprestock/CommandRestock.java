@@ -59,11 +59,11 @@ public class CommandRestock implements CommandExecutor {
         String playerUuid = player.getUniqueId().toString();
         ArrayList<Location> locations = ChestShopRestock.database.getLocations(playerUuid, itemName);
 
-        //
+        // Move the stack to whatever chestshop it can find
         for (Location location : locations) {
             Container container = getContainer(location, player);
             if (container != null) {
-                HookCoreProtect.logTransaction(player, location);
+                HookCoreProtect.logTransaction(player, container.getLocation());
                 HashMap<Integer, ItemStack> couldntStore = container.getInventory().addItem(content);
                 storage[inventoryIndex] = couldntStore.get(0);
                 playerInventory.setStorageContents(storage);
@@ -75,7 +75,7 @@ public class CommandRestock implements CommandExecutor {
      *
      * @param location get the container that has a shop sign at this location
      * @param player verify that the shop is owned by them and check their permission to see if we should load chunks
-     * @return
+     * @return The container of the shop block
      */
     @Nullable
     public Container getContainer(Location location, Player player) {
