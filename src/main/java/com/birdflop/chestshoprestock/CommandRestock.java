@@ -4,10 +4,9 @@ import com.Acrobot.ChestShop.Signs.ChestShopSign;
 import com.Acrobot.ChestShop.Utils.ItemUtil;
 import com.Acrobot.ChestShop.Utils.uBlock;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Container;
-import org.bukkit.block.Sign;
+import org.bukkit.block.*;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -54,8 +53,14 @@ public class CommandRestock implements CommandExecutor {
         ItemStack content = storage[inventoryIndex];
         if (content == null) return;
 
-        // Find the list of shops for this itemstack
-        String itemName = ItemUtil.getSignName(content);
+        // Verify that this item can be on signs
+        String itemName;
+        try {
+            itemName = ItemUtil.getSignName(content);
+        } catch (IllegalArgumentException ignored) {
+            return;
+        }
+
         String playerUuid = player.getUniqueId().toString();
         ArrayList<Location> locations = ChestShopRestock.database.getLocations(playerUuid, itemName);
 
@@ -92,8 +97,38 @@ public class CommandRestock implements CommandExecutor {
             if (!(state instanceof Sign)) return null;
             Sign sign = (Sign) state;
             if (!ChestShopSign.isOwner(player, sign)) return null;
+            if (player.hasPermission("chestshoprestock.command.restock.loadchunks")) {
+                loadConnectedContainer(sign);
+            }
         }
 
         return uBlock.findConnectedContainer(block);
+    }
+
+    /**
+     * Assures that the chest connected to the sign will be loaded
+     * @param sign a loaded Sign
+     */
+    public void loadConnectedContainer(Sign sign) {
+        BlockFace signFace = null;
+        BlockData data = sign.getBlockData();
+        if (data instanceof WallSign) {
+            signFace = ((WallSign) data).getFacing().getOppositeFace();
+        }
+        Location location = sign.getLocation();
+
+        if (signFace != null) {
+            Block faceBlock = location.clone().add(signFace.getModX(), signFace.getModY(), signFace.getModZ()).getBlock();
+            faceBlock.getChunk().load(false);
+            if (uBlock.couldBeShopContainer(faceBlock)) return;
+        }
+
+        for (BlockFace bf : uBlock.SHOP_FACES) {
+            if (bf != signFace) {
+                Block faceBlock = location.clone().add(bf.getModX(), bf.getModY(), bf.getModZ()).getBlock();
+                faceBlock.getChunk().load(false);
+                if (uBlock.couldBeShopContainer(faceBlock)) return;
+            }
+        }
     }
 }
