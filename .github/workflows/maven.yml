@@ -37,8 +37,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Snapshot ${{ github.ref }}
+          tag_name: ${{ env.artifactName }}-${{ env.git_hash }}.jar
+          release_name: Snapshot ${{ env.artifactName }}-${{ env.git_hash }}
           body: |
             See commit details
           draft: false
