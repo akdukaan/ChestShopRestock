@@ -10,17 +10,17 @@ import org.bukkit.block.data.type.WallSign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
-public class CommandRestock implements CommandExecutor {
+public class CommandRestock implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
@@ -34,9 +34,15 @@ public class CommandRestock implements CommandExecutor {
             return true;
         }
         ItemStack[] contents = player.getInventory().getStorageContents();
-        for (int i = 0; i < contents.length; i++) {
-            moveStack(player, i);
+
+        if (args.length >= 1 && args[0].equalsIgnoreCase("hand")) {
+            moveStack(player, player.getInventory().getHeldItemSlot());
+        } else {
+            for (int i = 0; i < contents.length; i++) {
+                moveStack(player, i);
+            }
         }
+
         ItemStack[] contentAfter = player.getInventory().getStorageContents();
         if (Arrays.equals(contents, contentAfter)) {
             Lang.sendMessage(player, Lang.NOTHING_TO_RESTOCK);
@@ -130,5 +136,15 @@ public class CommandRestock implements CommandExecutor {
                 if (uBlock.couldBeShopContainer(faceBlock)) return;
             }
         }
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        List<String> list = new ArrayList<>();
+        if (args.length == 1) {
+            Set<String> argOptions = Set.of("hand", "inventory");
+            return StringUtil.copyPartialMatches(args[0], argOptions, list);
+        }
+        return list;
     }
 }
