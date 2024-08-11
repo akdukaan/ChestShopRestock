@@ -29,8 +29,8 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.artifactName }}-${{ env.git_hash }}.jar
-          path: ${{ env.artifactPath }}/${{ env.artifactName }}-${{ env.git_hash }}.jar
+          name: ${{ env.artifactName }}.jar
+          path: ${{ env.artifactPath }}/${{ env.artifactName }}.jar
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
