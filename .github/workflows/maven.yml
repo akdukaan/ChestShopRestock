@@ -40,4 +40,4 @@ jobs:
           body: |
             This release includes changes from commit ${{ github.sha }}.
           draft: false  # Create a published release by default
-          prerelease: ${{ github.ref =~ /v\d+\.\d+\.\d+-(.+)/ && matches[1] != '' }}
+          prerelease: true
