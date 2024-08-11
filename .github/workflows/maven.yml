@@ -31,3 +31,13 @@ jobs:
         with:
           name: ${{ env.artifactName }}-${{ env.git_hash }}.jar
           path: ${{ env.artifactPath }}/${{ env.artifactName }}-${{ env.git_hash }}.jar
+      - name: Create Release (Only if tag push)
+        uses: actions/create-release@v4
+        if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
+        with:
+          tag_name: ${{ github.ref }}  # Use the pushed tag automatically
+          release_name: "Snapshot ${{ github.sha }}"  # Informative release name
+          body: |
+            This release includes changes from commit ${{ github.sha }}.
+          draft: false  # Create a published release by default
+          prerelease: ${{ github.ref =~ /v\d+\.\d+\.\d+-(.+)/ && matches[1] != '' }}
