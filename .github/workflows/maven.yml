@@ -43,3 +43,12 @@ jobs:
             See commit details
           draft: false
           prerelease: true
+      - name: upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.artifactPath }}/${{ env.artifactName }}-${{ env.git_hash }}.jar
+          asset_name: ${{ env.artifactName }}-${{ env.git_hash }}.jar
+          asset_content_type: application/jar
