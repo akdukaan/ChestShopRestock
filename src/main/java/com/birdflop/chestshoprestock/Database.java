@@ -105,6 +105,7 @@ public class Database {
             statement.setInt(5, locationy);
             statement.setInt(6, locationz);
             statement.executeUpdate();
+
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Error adding entry to database", e);
         }
